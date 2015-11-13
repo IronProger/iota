@@ -5,13 +5,12 @@
 #define FALSE 0
 
 
-char new() {
+char new(int number) {
 	// функция лепит новый файл с нулём
 	FILE * file = fopen("/tmp/iota.number", "wb");
 	if (file == NULL) return FALSE;
-	int i=1;
-    fwrite(&i, sizeof(int), 1, file);
-    fclose(file);
+	fwrite(&number, sizeof(int), 1, file);
+	fclose(file);
 	return TRUE;
 }
 
@@ -35,18 +34,18 @@ int main(int argc, char **argv) {
 			return 0;
 		}
 		if (!strcmp(argv[1], "null")) {
-			if (new() != TRUE) { // лепим файл с нулём
- 	          	fputs("iota: i/o error", stderr);
- 	          	return 2;
- 	      	}
+			if (new(0) != TRUE) { // лепим файл с нулём
+ 	          		fputs("iota: i/o error", stderr);
+				return 2;
+			}
 			return 0;
 		}
 		if (!strcmp(argv[1], "get")) {
 			FILE *file = fopen("/tmp/iota.number", "rb");
-	    	if (file == NULL) {
-				fputs("iota: file does not exist\n", stderr);
-				return 1;
-	        }
+			if (file == NULL) {
+				printf("%d", 0);
+				return 0;
+			}
 			int number;
 			fread(&number, sizeof(int), 1, file);
 			fclose(file);
@@ -64,7 +63,7 @@ int main(int argc, char **argv) {
 	// чтение первой строки файла с числом, или создание файла с нулём при отсутствии оного
 	FILE *file = fopen("/tmp/iota.number", "rb");
 	if (file == NULL) {
-		if (new() != TRUE) { // лепим файл с нулём
+		if (new(1) != TRUE) { // лепим файл с еденицей
 			fputs("iota: i/o error", stderr);
 			return 2;
 		}
